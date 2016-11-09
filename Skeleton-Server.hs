@@ -1,6 +1,6 @@
 module Main where
 import Network
-import Network.Socket
+import Network.Socket hiding (accept)
 import System.Environment
 import System.IO
 import Control.Concurrent 
