@@ -6,7 +6,7 @@ Email: ggunn@tcd.ie
 
 Setup Instructions:
 
-- git clone
+- git clone https://github.com/Garygunn94/Distributed-Lab2.git
 - sudo apt-get update
 - sudo apt-get install haskell-platform (This should install everything needed)
 - cd Distributed-Lab2
