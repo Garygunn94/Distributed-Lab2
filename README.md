@@ -1,5 +1,9 @@
 # Distributed-Lab2
 
+Gary Gunn
+ID: 12306321
+Email: ggunn@tcd.ie
+
 Setup Instructions:
 
 - git clone
