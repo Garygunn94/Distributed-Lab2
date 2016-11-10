@@ -48,7 +48,7 @@ main = withSocketsDo $ do
   --Calls the mainHandler which will monitor the FIFO channel
   mainHandler sock chan
 
-mainHandler :: Socket -> Chan [String] -> IO ()
+mainHandler :: Socket -> Chan String -> IO ()
 mainHandler sock chan = do
 
   --Read current message on the FIFO channel
@@ -59,7 +59,7 @@ mainHandler sock chan = do
     ("KILL_SERVICE") -> putStrLn "Terminating the Service!"
     _ -> mainHandler sock chan
 
-clientconnectHandler :: Socket -> Chan [String] -> TVar Int -> Server -> IO ()
+clientconnectHandler :: Socket -> Chan String -> TVar Int -> Server -> IO ()
 clientconnectHandler sock chan numThreads server = do
 
   --Accept the socket which returns a handle, host and port
@@ -79,7 +79,7 @@ clientconnectHandler sock chan numThreads server = do
 
   clientconnectHandler sock chan numThreads server
 
-clientHandler :: Handle -> Chan [String] -> Server -> TVar Int -> IO ()
+clientHandler :: Handle -> Chan String -> Server -> TVar Int -> IO ()
 clientHandler handle chan server numThreads = do
 
   --Recieve message from client
@@ -97,7 +97,7 @@ clientHandler handle chan server numThreads = do
   clientHandler handle chan server numThreads
 
 --Function called when HELO text command recieved  
-heloCommand :: Handle -> Chan [String] -> Server -> TVar Int -> String -> IO ()
+heloCommand :: Handle -> Chan String -> Server -> TVar Int -> String -> IO ()
 heloCommand handle chan server@Server{..} numThreads msg = do
   writeChan chan "HELO command recieved"
 
@@ -110,7 +110,7 @@ heloCommand handle chan server@Server{..} numThreads msg = do
   hFlush handle
 
 --Function called when KILL_SERVICE is recieved - Terminated the service
-killservice :: Handle -> Chan [String] -> IO ()
+killservice :: Handle -> Chan String -> IO ()
 killservice handle chan = do
   --Let Clients know
   hPutStrLn handle "Terminating the Service!"
