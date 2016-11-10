@@ -68,7 +68,7 @@ clientconnectHandler sock chan numThreads server = do
 
   --If there are still threads remaining...
   if (count < maxnumThreads) then do
-    myForkFinally (clientHandler handle chan server numThreads) (\_ -> atomically $ decrementTVar numThreads)
+    forkFinally (clientHandler handle chan server numThreads) (\_ -> atomically $ decrementTVar numThreads)
     atomically $ incrementTVar numThreads
     else do
       hPutStrLn handle "Service reached maximum capacity, please try again later!"
@@ -109,8 +109,3 @@ incrementTVar tv = modifyTVar tv ((+) 1)
 
 decrementTVar :: TVar Int -> STM ()
 decrementTVar tv = modifyTVar tv (subtract 1)
-
-myForkFinally :: IO a -> (Either SomeException a -> IO ()) -> IO ThreadId
-myForkFinally action and_then =
-  mask $ \restore ->
-    forkIO $ try (restore action) >>= and_then
