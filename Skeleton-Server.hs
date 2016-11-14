@@ -1,6 +1,6 @@
 module Main where
-import Network
-import Network.Socket hiding (accept)
+import Network hiding (accept)
+import Network.Socket
 import System.Environment
 import System.IO
 import Control.Concurrent 
@@ -63,8 +63,9 @@ clientconnectHandler :: Socket -> Chan String -> TVar Int -> Server -> IO ()
 clientconnectHandler sock chan numThreads server = do
 
   --Accept the socket which returns a handle, host and port
-  (handle, host, port) <- accept sock
-  --handle <- socketToHandle s ReadWriteMode
+  --(handle, host, port) <- accept sock
+  (s,a) <- accept sock
+  handle <- socketToHandle s ReadWriteMode
   --Read numThreads from memory and print it on server console
   count <- atomically $ readTVar numThreads
   putStrLn $ "numThreads = " ++ show count
@@ -100,7 +101,7 @@ clientHandler handle chan server numThreads = do
 heloCommand :: Handle -> Chan String -> Server -> TVar Int -> String -> IO ()
 heloCommand handle chan server@Server{..} numThreads msg = do
   writeChan chan "HELO command recieved"
-
+  hSetBuffering handle (BlockBuffering Nothing)
   --Sends the following to the client, as requested
   hPutStrLn handle $ "HELO " ++ msg ++ "\n\
                      \IP:" ++ address ++ "\n\
